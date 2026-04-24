@@ -5,7 +5,9 @@ namespace RiskNotes.Models;
 public class RiskNote
 {
     
-    public int Id { get; set; }    
+    public int Id { get; set; }
+
+    public string? UserId { get; set; }
     
     [Required]
     [StringLength(100)]

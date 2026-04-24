@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RiskNotes.Data;
 using RiskNotes.Models;
+using System.Security.Claims;
 
 namespace RiskNotes.Controllers;
 
+[Authorize]
 [Route("api/risknotes")]
 [ApiController]
 public class ApiRiskNotesController : ControllerBase
@@ -19,7 +22,10 @@ public class ApiRiskNotesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<RiskNote>>> GetAll()
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         var notes = await _context.RiskNotes
+            .Where(n => n.UserId == userId)
             .OrderByDescending(n => n.CreatedAt)
             .ToListAsync();
 
@@ -28,8 +34,10 @@ public class ApiRiskNotesController : ControllerBase
 
     [HttpGet("{id}")]
     public async Task<ActionResult<RiskNote>> GetById(int id)
-    {
-        var note = await _context.RiskNotes.FindAsync(id);
+    {        
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var note = await _context.RiskNotes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
 
         if(note == null)
         {
@@ -47,7 +55,8 @@ public class ApiRiskNotesController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        note.Id = 0;
+        // note.Id = 0;
+        note.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         note.CreatedAt = DateTime.Now;
 
         _context.RiskNotes.Add(note);
@@ -63,6 +72,8 @@ public class ApiRiskNotesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, RiskNote updatedNote)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                  
         if (id != updatedNote.Id)
         {
             return BadRequest();
@@ -73,7 +84,8 @@ public class ApiRiskNotesController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var existingNote = await _context.RiskNotes.FindAsync(id);
+        var existingNote = await _context.RiskNotes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
 
         if (existingNote == null)
         {
@@ -93,7 +105,9 @@ public class ApiRiskNotesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var note = await _context.RiskNotes.FindAsync(id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var note = await _context.RiskNotes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
 
         if (note == null)
         {

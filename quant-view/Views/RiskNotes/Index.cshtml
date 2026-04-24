@@ -21,6 +21,8 @@
 
 </form>
 
+<button id="loadApiData" class="btn btn-outline-secondary mb-3">Load via API</button>
+
 <table class="table">
     <thead>
         <tr>
@@ -62,3 +64,17 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.getElementById("loadApiData").addEventListener("click", async() => {
+            const response = await fetch("/api/risknotes");
+            const data = await response.json();
+
+            console.log(`API Data: ${data}`);
+            alert(`Loaded ${data.length} notes from API`);
+        });
+    </script>
+}
+
+

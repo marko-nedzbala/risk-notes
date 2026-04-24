@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RiskNotes.Data;
 using RiskNotes.Models;
+using System.Security.Claims;
 
 namespace RiskNotes.Controllers;
 
@@ -18,7 +19,10 @@ public class RiskNotesController : Controller
 
     public async Task<IActionResult> Index(string? searchTerm, string? sortBy)
     {
-        var query = _context.RiskNotes.AsQueryable();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var query = _context.RiskNotes
+            .Where(n => n.UserId == userId)
+            .AsQueryable();
 
         if(!string.IsNullOrWhiteSpace(searchTerm))
         {
@@ -71,17 +75,22 @@ public class RiskNotesController : Controller
     [HttpGet]
     public IActionResult Create()
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         return View();
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(RiskNote note)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
         if(!ModelState.IsValid)
         {
             return View(note);
         }
 
+        note.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         note.CreatedAt = DateTime.Now;
         _context.RiskNotes.Add(note);
         await _context.SaveChangesAsync();
@@ -91,8 +100,10 @@ public class RiskNotesController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
         var note = await _context.RiskNotes
-            .FirstOrDefaultAsync(n => n.Id == id);
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
 
         if (note == null)
         {
@@ -105,7 +116,10 @@ public class RiskNotesController : Controller
     [HttpGet]
     public async Task <IActionResult> Edit(int id)
     {
-        var note = await _context.RiskNotes.FindAsync(id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        var note = await _context.RiskNotes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
         if(note == null)
         {
             return NotFound();
@@ -117,11 +131,14 @@ public class RiskNotesController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(RiskNote note)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
         if(!ModelState.IsValid)
         {
             return View(note);
         }
 
+        note.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         _context.RiskNotes.Update(note);
         await _context.SaveChangesAsync();
 
@@ -131,24 +148,29 @@ public class RiskNotesController : Controller
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
         var note = await _context.RiskNotes.FindAsync(id);
         if(note == null)
         {
             return NotFound();
         }
 
+        note.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         return View(note);
     }
 
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
         var note = await _context.RiskNotes.FindAsync(id);
         if(note == null)
         {
             return NotFound();
         }
-
+        note.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         _context.RiskNotes.Remove(note);
         await _context.SaveChangesAsync();
 
@@ -157,13 +179,15 @@ public class RiskNotesController : Controller
 
     public async Task<IActionResult> Dashboard()
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
         var notes = await _context.RiskNotes.ToListAsync();
 
-        ViewData["TotalNotes"] = notes.Count;
-        ViewData["CriticalCount"] = notes.Count(n => n.Severity == "Critical");
-        ViewData["HighCount"] = notes.Count(n => n.Severity == "High");
-        ViewData["MediumCount"] = notes.Count(n => n.Severity == "Medium");
-        ViewData["LowCount"] = notes.Count(n => n.Severity == "Low");
+        ViewData["TotalNotes"] = notes.Count(n => n.UserId == userId);
+        ViewData["CriticalCount"] = notes.Count(n => n.Severity == "Critical" && n.UserId == userId);
+        ViewData["HighCount"] = notes.Count(n => n.Severity == "High" && n.UserId == userId);
+        ViewData["MediumCount"] = notes.Count(n => n.Severity == "Medium" && n.UserId == userId);
+        ViewData["LowCount"] = notes.Count(n => n.Severity == "Low" && n.UserId == userId);
 
         return View();
     }
