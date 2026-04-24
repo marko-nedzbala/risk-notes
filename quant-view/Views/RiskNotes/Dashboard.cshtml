@@ -1,0 +1,64 @@
+
+<h1>Risk Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-bg-dark mb-3">
+            <div class="card-body">
+                <h5>Total Notes</h5>
+                <h2>@ViewData["TotalNotes"]</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-danger mb-3">
+            <div class="card-body">
+                <h5>Critical</h5>
+                <h2>@ViewData["CriticalCount"]</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-warning mb-3">
+            <div class="card-body">
+                <h5>High</h5>
+                <h2>@ViewData["HighCount"]</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-success mb-3">
+            <div class="card-body">
+                <h5>Medium & Low</h5>
+                <h2>@((int)ViewData["MediumCount"]! + (int)ViewData["LowCount"]!)</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Notes</a>"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,115 @@
+
+curl -X POST https://localhost:xxxx/api/risknotes ^
+  -H "Content-Type: application/json" ^
+  -d "{\"title\":\"API Test Note\",\"category\":\"API\",\"severity\":\"High\",\"description\":\"Created from the API.\"}"
+
+
+Invoke-RestMethod `
+  -Uri "https://localhost:xxxx/api/risknotes" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"title":"API Test Note","category":"API","severity":"High","description":"Created from the API."}'
+
+
+
+
+
+
+Invoke-RestMethod `
+  -Uri "https://localhost:xxxx/api/risknotes/1" `
+  -Method Put `
+  -ContentType "application/json" `
+  -Body '{"id":1,"title":"Updated API Note","category":"API","severity":"Critical","description":"Updated through the API."}'
+
+
+
+Invoke-RestMethod `
+  -Uri "https://localhost:xxxx/api/risknotes/1" `
+  -Method Delete
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+@model RiskNotes.Models.RiskNote
+
+<h1>@Model.Title</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Category</h5>
+        <p class="card-text">@Model.Description</p>
+        <p class="text-muted">Created: @Model.CreatedAt.ToShortDateString()</p>
+        <p><strong>Severity:</strong> @Model.Severity</p>
+
+        <a asp-action="Index" class="btn btn-secondary">Back to list</a>
+    </div>
+</div>
