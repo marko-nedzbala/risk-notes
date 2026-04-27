@@ -10,10 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(
-        builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+{
+    if(!string.IsNullOrWhiteSpace(databaseUrl))
+    {
+        options.UseNpgsql(databaseUrl);
+    } else
+    {        
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+});
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
