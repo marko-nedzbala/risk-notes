@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,16 +21,39 @@ public class ApiRiskNotesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<RiskNote>>> GetAll()
+    public async Task<ActionResult<List<RiskNote>>> GetAll(int page = 1, int pageSize = 10)
     {
+        if(page < 1)
+        {
+            page = 1;
+        }
+
+        if(pageSize < 1 || pageSize > 50)
+        {
+            pageSize = 10;
+        }
+
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var notes = await _context.RiskNotes
+        var query = _context.RiskNotes
             .Where(n => n.UserId == userId)
-            .OrderByDescending(n => n.CreatedAt)
+            .OrderByDescending(n => n.CreatedAt);
+
+        var totalCount = await query.CountAsync();
+
+        var notes = await query
+            .Skip( (page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-            return Ok(notes);
+        return Ok(new
+        {
+           Page = page,
+           PageSize = pageSize,
+           TotalCount = totalCount,
+           Totalpages = (int)Math.Ceiling(totalCount / (double)pageSize),
+           Data = notes
+        });
     }
 
     [HttpGet("{id}")]

@@ -1,3 +1,4 @@
+@using System.Security.Cryptography
 @model RiskNotes.Models.RiskNote
 
 <h1>@Model.Title</h1>
@@ -6,6 +7,25 @@
     <div class="card-body">
         <h5 class="card-title">@Model.Category</h5>
         <p class="card-text">@Model.Description</p>
+        
+        @* The attachments *@
+        @if(Model.Attachments.Any())
+        {
+            <h5>Attachments</h5>
+            <ul>
+                @foreach(var file in Model.Attachments)
+                {
+                    <li>
+                        <a asp-action="DownloadAttachment" asp-route-itemid="@file.Id">@file.FileName</a>
+                        (@(file.FileSize / 1024) KB)
+                    </li>
+                }
+            </ul>
+        } else
+        {
+            <p class="text-muted">No attachments uploaded.</p>
+        }
+
         <p class="text-muted">Created: @Model.CreatedAt.ToShortDateString()</p>
         <p><strong>Severity:</strong> @Model.Severity</p>
 

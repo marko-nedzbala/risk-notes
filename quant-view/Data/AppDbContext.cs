@@ -12,4 +12,6 @@ public class AppDbContext : IdentityDbContext
     }
 
     public DbSet<RiskNote> RiskNotes => Set<RiskNote>();
+
+    public DbSet<RiskNoteAttachment> RiskNoteAttachments => Set<RiskNoteAttachment>();
 }

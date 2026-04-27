@@ -25,4 +25,6 @@ public class RiskNote
     [Required]
     [StringLength(20)]
     public string Severity { get; set; } = "";
+
+    public List<RiskNoteAttachment> Attachments { get; set; } = new();
 }

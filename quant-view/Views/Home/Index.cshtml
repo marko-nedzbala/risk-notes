@@ -13,7 +13,9 @@
                 <a asp-controller="RiskNotes" asp-action="Create"
                 class="btn btn-primary m-3">Create New Risk Note</a>
                 <a asp-controller="RiskNotes" asp-action="Index" class="btn btn-primary m-3">View All Notes</a>
-                <a asp-action="Dashboard" class="btn btn-outline-primary m-3">Dashboard</a>
+                <a asp-controller="RiskNotes" asp-action="Dashboard" class="btn btn-outline-primary m-3">Dashboard</a>
+                <a asp-controller="RiskNotes" asp-action="ExportCsv" class="btn btn-outline-success m-3">Export to CSV</a>
+                <a asp-controller="RiskNotes" asp-action="ExportExcel" class="btn btn-outline-success m-3">Export to Excel</a>
             </table>
         </div>
     </div>
