@@ -1,0 +1,16 @@
+services:
+  risknotes:
+    build: .
+    container_name: risknotes_app
+    ports:
+      - "8080:8080"
+    volumes:
+      # - risknotes_data:/app/data
+      # - risknotes_upload:/app/wwwroot/uploads
+      - ./data:/app/data
+      - ./uploads:/app/wwwroot/uploads
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+# volumes:
+#   risknotes_data:
+#   risknotes_upload:
