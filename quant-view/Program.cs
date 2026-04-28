@@ -14,40 +14,8 @@ var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    if(!string.IsNullOrWhiteSpace(databaseUrl))
-    {
-        string connectionString;
-
-        if (databaseUrl.StartsWith("postgres://") || 
-            databaseUrl.StartsWith("postgresql://"))
-        {
-            var uri = new Uri(databaseUrl);
-            var userInfo = uri.UserInfo.Split(':', 2);
-
-            var username = Uri.UnescapeDataString(userInfo[0]);
-            var password = Uri.UnescapeDataString(userInfo[1]);
-            var database = uri.AbsolutePath.TrimStart('/');
-            var port = uri.Port == -1 ? 5432 : uri.Port;
-
-            connectionString = 
-                $"Host={uri.Host};" +
-                $"Port={port};" +
-                $"Database={database};" +
-                $"Username={username};" +
-                $"Password={password};" +
-                $"SSL Mode=Require;" +
-                $"Trust Server Certificate=true";
-        } else
-        {
-            connectionString = databaseUrl;
-                // .Replace("Host-tcp://", "Host=")
-                // .Replace("Server=tcp://", "Server=");
-        }
-        options.UseNpgsql(connectionString);
-    } else
-    {        
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-    }
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
