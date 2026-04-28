@@ -38,7 +38,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 $"Trust Server Certificate=true";
         } else
         {
-            connectionString = databaseUrl;
+            connectionString = databaseUrl
+                .Replace("Host-tcp://", "Host=")
+                .Replace("Server=tcp://", "Server=");
         }
         options.UseNpgsql(connectionString);
     } else
