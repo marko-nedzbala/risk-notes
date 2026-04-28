@@ -4,13 +4,34 @@ services:
     container_name: risknotes_app
     ports:
       - "8080:8080"
-    volumes:
-      # - risknotes_data:/app/data
-      # - risknotes_upload:/app/wwwroot/uploads
-      - ./data:/app/data
-      - ./uploads:/app/wwwroot/uploads
+    depends_on:
+      - postgres
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-# volumes:
-#   risknotes_data:
-#   risknotes_upload:
+      ASPNETCORE_ENVIRONMENT: Development
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/risknotes_dev
+  
+  postgres:
+    image: postgres:18
+    container_name: risknotes_postgres
+    environment:
+      POSTGRES_DB: risknotes_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - risknotes_pgdata:/var/lib/postgresql/data
+
+volumes:
+  risknotes_pgdata:
+
+#     volumes:
+#       # - risknotes_data:/app/data
+#       # - risknotes_upload:/app/wwwroot/uploads
+#       - ./data:/app/data
+#       - ./uploads:/app/wwwroot/uploads
+#     environment:
+#       - ASPNETCORE_ENVIRONMENT=Development
+# # volumes:
+# #   risknotes_data:
+# #   risknotes_upload:

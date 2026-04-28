@@ -11,7 +11,7 @@ using RiskNotes.Data;
 namespace quant_view.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260428004914_InitialPostgresCreate")]
+    [Migration("20260428005755_InitialPostgresCreate")]
     partial class InitialPostgresCreate
     {
         /// <inheritdoc />
