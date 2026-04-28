@@ -100,7 +100,7 @@ public class RiskNotesController : Controller
         }
 
         note.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        note.CreatedAt = DateTime.Now;
+        note.CreatedAt = DateTime.UtcNow;
 
         if(attachment != null && attachment.Length > 0)
         {
@@ -124,7 +124,7 @@ public class RiskNotesController : Controller
                 StoredFileName = storedFileName,
                 ContentType = attachment.ContentType,
                 FileSize = attachment.Length,
-                UploadedAt = DateTime.Now
+                UploadedAt = DateTime.UtcNow
             });
         }
 

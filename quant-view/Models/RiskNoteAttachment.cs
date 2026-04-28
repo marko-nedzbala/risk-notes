@@ -21,7 +21,7 @@ public class RiskNoteAttachment
 
     public long FileSize { get; set; }
 
-    public DateTime UploadedAt { get; set; } = DateTime.Now;
+    public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 }
 
 

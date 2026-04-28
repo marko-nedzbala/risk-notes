@@ -20,7 +20,7 @@ public class RiskNote
     [Required]
     [StringLength(1000)]
     public string Description { get; set; } = "";
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [Required]
     [StringLength(20)]

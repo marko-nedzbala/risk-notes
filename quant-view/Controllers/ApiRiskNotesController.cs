@@ -81,7 +81,7 @@ public class ApiRiskNotesController : ControllerBase
 
         // note.Id = 0;
         note.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        note.CreatedAt = DateTime.Now;
+        note.CreatedAt = DateTime.UtcNow;
 
         _context.RiskNotes.Add(note);
         await _context.SaveChangesAsync();
