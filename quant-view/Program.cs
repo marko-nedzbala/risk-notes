@@ -16,6 +16,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if(!string.IsNullOrWhiteSpace(databaseUrl))
     {
+        var databaseUri = new Uri(databaseUrl);
+
+        var userInfo = databaseUri.UserInfo.Split(':');
+
+        var username = Uri.UnescapeDataString(userInfo[0]);
+        var password = Uri.UnescapeDataString(userInfo[1]);
+
+        var connectionString = 
+            $"Host={databaseUri.Host};" +
+            $"Port={databaseUri.Port};" +
+            $"Database={databaseUri.AbsolutePath.TrimStart('/')};" +
+            $"Username={username};" +
+            $"Password={password};" +
+            $"SSL Mode=Require;" +
+            $"Trust Server Certificate=true";
+        
         options.UseNpgsql(databaseUrl);
     } else
     {        
