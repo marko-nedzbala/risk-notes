@@ -16,23 +16,31 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if(!string.IsNullOrWhiteSpace(databaseUrl))
     {
-        var databaseUri = new Uri(databaseUrl);
+        string connectionString;
 
-        var userInfo = databaseUri.UserInfo.Split(':');
+        if (databaseUrl.StartsWith("postgres://") || 
+            databaseUrl.StartsWith("postgresql://"))
+        {
+            var uri = new Uri(databaseUrl);
+            var userInfo = uri.UserInfo.Split(':', 2);
 
-        var username = Uri.UnescapeDataString(userInfo[0]);
-        var password = Uri.UnescapeDataString(userInfo[1]);
+            var username = Uri.UnescapeDataString(userInfo[0]);
+            var password = Uri.UnescapeDataString(userInfo[1]);
+            var database = uri.AbsolutePath.TrimStart('/');
 
-        var connectionString = 
-            $"Host={databaseUri.Host};" +
-            $"Port={databaseUri.Port};" +
-            $"Database={databaseUri.AbsolutePath.TrimStart('/')};" +
-            $"Username={username};" +
-            $"Password={password};" +
-            $"SSL Mode=Require;" +
-            $"Trust Server Certificate=true";
-        
-        options.UseNpgsql(databaseUrl);
+            connectionString = 
+                $"Host={uri.Host};" +
+                $"Port={uri.Port};" +
+                $"Database={database};" +
+                $"Username={username};" +
+                $"Password={password};" +
+                $"SSL Mode=Require;" +
+                $"Trust Server Certificate=true";
+        } else
+        {
+            connectionString = databaseUrl;
+        }
+        options.UseNpgsql(connectionString);
     } else
     {        
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
