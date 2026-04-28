@@ -27,10 +27,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             var username = Uri.UnescapeDataString(userInfo[0]);
             var password = Uri.UnescapeDataString(userInfo[1]);
             var database = uri.AbsolutePath.TrimStart('/');
+            var port = uri.Port == -1 ? 5432 : uri.Port;
 
             connectionString = 
                 $"Host={uri.Host};" +
-                $"Port={uri.Port};" +
+                $"Port={port};" +
                 $"Database={database};" +
                 $"Username={username};" +
                 $"Password={password};" +
