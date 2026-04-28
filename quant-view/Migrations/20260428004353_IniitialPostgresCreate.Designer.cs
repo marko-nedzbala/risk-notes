@@ -11,8 +11,8 @@ using RiskNotes.Data;
 namespace quant_view.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260424203754_AddUserIdToRiskNotes")]
-    partial class AddUserIdToRiskNotes
+    [Migration("20260428004353_IniitialPostgresCreate")]
+    partial class IniitialPostgresCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -253,6 +253,40 @@ namespace quant_view.Migrations
                     b.ToTable("RiskNotes");
                 });
 
+            modelBuilder.Entity("RiskNotes.Models.RiskNoteAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RiskNoteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RiskNoteId");
+
+                    b.ToTable("RiskNoteAttachments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -302,6 +336,22 @@ namespace quant_view.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("RiskNotes.Models.RiskNoteAttachment", b =>
+                {
+                    b.HasOne("RiskNotes.Models.RiskNote", "RiskNote")
+                        .WithMany("Attachments")
+                        .HasForeignKey("RiskNoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RiskNote");
+                });
+
+            modelBuilder.Entity("RiskNotes.Models.RiskNote", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 #pragma warning restore 612, 618
         }

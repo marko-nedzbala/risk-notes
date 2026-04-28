@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace quant_view.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentity : Migration
+    public partial class IniitialPostgresCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,24 @@ namespace quant_view.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RiskNotes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Category = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Severity = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RiskNotes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +174,30 @@ namespace quant_view.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RiskNoteAttachments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RiskNoteId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FileName = table.Column<string>(type: "TEXT", nullable: false),
+                    StoredFileName = table.Column<string>(type: "TEXT", nullable: false),
+                    ContentType = table.Column<string>(type: "TEXT", nullable: false),
+                    FileSize = table.Column<long>(type: "INTEGER", nullable: false),
+                    UploadedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RiskNoteAttachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RiskNoteAttachments_RiskNotes_RiskNoteId",
+                        column: x => x.RiskNoteId,
+                        principalTable: "RiskNotes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -192,6 +234,11 @@ namespace quant_view.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RiskNoteAttachments_RiskNoteId",
+                table: "RiskNoteAttachments",
+                column: "RiskNoteId");
         }
 
         /// <inheritdoc />
@@ -213,10 +260,16 @@ namespace quant_view.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "RiskNoteAttachments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "RiskNotes");
         }
     }
 }
